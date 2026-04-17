@@ -14,6 +14,17 @@
         darkMode: "class",
       };
     </script>
+    <style>
+      #nav-glass {
+        transition:
+          left 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+          top 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+          width 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+          height 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 0.25s ease;
+        will-change: left, top, width, height;
+      }
+    </style>
   </head>
   <body class="bg-white text-zinc-900 antialiased dark:bg-black dark:text-white">
     <header
@@ -21,11 +32,32 @@
     >
       <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 md:px-8">
         <a href="#" class="text-sm font-semibold tracking-tight">唐成子 · 企业信息化咨询</a>
-        <nav class="hidden items-center gap-6 text-sm text-zinc-500 md:flex dark:text-zinc-400">
-          <a class="transition-all duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white" href="#about">关于我</a>
-          <a class="transition-all duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white" href="#capability">核心能力</a>
-          <a class="transition-all duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white" href="#cases">项目经验</a>
-          <a class="transition-all duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white" href="#contact">联系咨询</a>
+        <nav
+          id="desktop-nav"
+          class="relative hidden items-center gap-1 text-sm text-zinc-500 md:flex dark:text-zinc-400"
+        >
+          <span
+            id="nav-glass"
+            class="pointer-events-none absolute rounded-full border border-zinc-200/60 bg-white/45 shadow-[0_4px_24px_rgb(0,0,0,0.06)] backdrop-blur-md dark:border-white/12 dark:bg-white/[0.08] dark:shadow-[0_4px_28px_rgb(0,0,0,0.35)]"
+            style="opacity: 0; left: 0; top: 0; width: 0; height: 0"
+            aria-hidden="true"
+          ></span>
+          <a
+            class="nav-item relative z-10 flex min-h-[44px] items-center rounded-full px-4 py-2 transition-colors duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white"
+            href="#about"
+            >关于我</a>
+          <a
+            class="nav-item relative z-10 flex min-h-[44px] items-center rounded-full px-4 py-2 transition-colors duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white"
+            href="#capability"
+            >核心能力</a>
+          <a
+            class="nav-item relative z-10 flex min-h-[44px] items-center rounded-full px-4 py-2 transition-colors duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white"
+            href="#cases"
+            >项目经验</a>
+          <a
+            class="nav-item relative z-10 flex min-h-[44px] items-center rounded-full px-4 py-2 transition-colors duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white"
+            href="#contact"
+            >联系咨询</a>
         </nav>
       </div>
     </header>
@@ -162,5 +194,45 @@
         </a>
       </div>
     </section>
+    <script>
+      (function () {
+        var nav = document.getElementById("desktop-nav");
+        var glass = document.getElementById("nav-glass");
+        if (!nav || !glass) return;
+
+        function moveGlassTo(el) {
+          var nr = nav.getBoundingClientRect();
+          var er = el.getBoundingClientRect();
+          glass.style.left = er.left - nr.left + nav.scrollLeft + "px";
+          glass.style.top = er.top - nr.top + nav.scrollTop + "px";
+          glass.style.width = er.width + "px";
+          glass.style.height = er.height + "px";
+          glass.style.opacity = "1";
+        }
+
+        function hideGlass() {
+          glass.style.opacity = "0";
+        }
+
+        nav.querySelectorAll(".nav-item").forEach(function (link) {
+          link.addEventListener("mouseenter", function () {
+            moveGlassTo(link);
+          });
+        });
+
+        nav.addEventListener("mouseleave", function () {
+          hideGlass();
+        });
+
+        window.addEventListener(
+          "resize",
+          function () {
+            var active = nav.querySelector(".nav-item:hover");
+            if (active) moveGlassTo(active);
+          },
+          { passive: true }
+        );
+      })();
+    </script>
   </body>
 </html>
